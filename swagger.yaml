@@ -1,9 +1,18 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  title: Balchivist
-  version: 1.0.0
+  title: Balchivist API
+  description: |-
+    Balchivist is a web application that allows you to easily search for current and historical datasets published by the Wikimedia Foundation. The Balchivist API allows you to interact with the Balchivist database programmatically, allowing you to quickly find and download datasets.
+
+    You can also browse Balchivist [using the web interface](https://dumps.wmcloud.org) or view the [source code behind Balchivist](https://github.com/balchivist).
+  version: 2.0.0
+  license:
+    name: GNU General Public License v3.0
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  contact:
+    email: balchivist@jorked.com
 servers:
-  - url: http://localhost:8000
+  - url: https://dumps.wmcloud.org
 components:
   securitySchemes:
     basicAuth:
@@ -11,6 +20,7 @@ components:
       scheme: basic
 security:
   - basicAuth: []
+  - {}
 tags:
   - name: Users
   - name: Family/Dataset/Snapshot
@@ -21,12 +31,13 @@ paths:
       tags:
         - Users
       summary: Get all users
+      description: Get a list of all users known to Balchivist.
       responses:
         "200":
           description: Successful response
           content:
             application/json: {}
-  /api/v1/users/1/:
+  /api/v1/users/{user_id}/:
     get:
       tags:
         - Users
@@ -36,7 +47,13 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/users/1/watchlists/:
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+  /api/v1/users/{user_id}/watchlists/:
     get:
       tags:
         - Users
@@ -46,6 +63,13 @@ paths:
           description: Successful response
           content:
             application/json: {}
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
   /api/v1/families:
     get:
       tags:
@@ -56,13 +80,13 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}:
+  /api/v1/families/{family_id}:
     get:
       tags:
         - Family/Dataset/Snapshot
       summary: Get a specific family
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
@@ -90,7 +114,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}/:
+  /api/v1/families/{family_id}/:
     patch:
       tags:
         - Family/Dataset/Snapshot
@@ -104,7 +128,7 @@ paths:
                 identifier: dumps
                 url: https://dumps.wikimedia.org/backup-index.html
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
@@ -114,13 +138,13 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}/datasets:
+  /api/v1/families/{family_id}/datasets:
     get:
       tags:
         - Family/Dataset/Snapshot
       summary: Get all datasets in a family
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
@@ -130,18 +154,18 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}/datasets/{DATASET_ID}:
+  /api/v1/families/{family_id}/datasets/{dataset_id}:
     get:
       tags:
         - Family/Dataset/Snapshot
       summary: Get a specific dataset in a family
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
           required: true
-        - name: DATASET_ID
+        - name: dataset_id
           in: path
           schema:
             type: string
@@ -151,7 +175,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}/datasets/:
+  /api/v1/families/{family_id}/datasets/:
     post:
       tags:
         - Family/Dataset/Snapshot
@@ -165,7 +189,7 @@ paths:
                 identifier: dewiki
                 url: https://dumps.wikimedia.org/dewiki/
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
@@ -175,7 +199,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}/datasets/{DATASET_ID}/:
+  /api/v1/families/{family_id}/datasets/{dataset_id}/:
     patch:
       tags:
         - Family/Dataset/Snapshot
@@ -189,12 +213,12 @@ paths:
                 identifier: enwiki
                 url: https://dumps.wikimedia.org/enwiki/
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
           required: true
-        - name: DATASET_ID
+        - name: dataset_id
           in: path
           schema:
             type: string
@@ -204,18 +228,18 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}/datasets/{DATASET_ID}/snapshots:
+  /api/v1/families/{family_id}/datasets/{dataset_id}/snapshots:
     get:
       tags:
         - Family/Dataset/Snapshot
       summary: Get all snapshots in a dataset in a family
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
           required: true
-        - name: DATASET_ID
+        - name: dataset_id
           in: path
           schema:
             type: string
@@ -225,23 +249,23 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}/datasets/{DATASET_ID}/snapshots/{SNAPSHOT_ID}:
+  /api/v1/families/{family_id}/datasets/{dataset_id}/snapshots/{snapshot_id}:
     get:
       tags:
         - Family/Dataset/Snapshot
       summary: Get a specific snapshot in a dataset in a family
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
           required: true
-        - name: DATASET_ID
+        - name: dataset_id
           in: path
           schema:
             type: string
           required: true
-        - name: SNAPSHOT_ID
+        - name: snapshot_id
           in: path
           schema:
             type: string
@@ -251,7 +275,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}/datasets/{DATASET_ID}/snapshots/:
+  /api/v1/families/{family_id}/datasets/{dataset_id}/snapshots/:
     post:
       tags:
         - Family/Dataset/Snapshot
@@ -267,12 +291,12 @@ paths:
                 url: https://dumps.wikimedia.org/enwiki/20220601/
                 status: done
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
           required: true
-        - name: DATASET_ID
+        - name: dataset_id
           in: path
           schema:
             type: string
@@ -282,7 +306,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/families/{FAMILY_ID}/datasets/{DATASET_ID}/snapshots/{SNAPSHOT_ID}/:
+  /api/v1/families/{family_id}/datasets/{dataset_id}/snapshots/{snapshot_id}/:
     patch:
       tags:
         - Family/Dataset/Snapshot
@@ -314,17 +338,17 @@ paths:
                     md5: 562556227d202909db81096092954249
                     sha1: 7fe80134673430a54c0bce6e828546cc0a8c3224
       parameters:
-        - name: FAMILY_ID
+        - name: family_id
           in: path
           schema:
             type: string
           required: true
-        - name: DATASET_ID
+        - name: dataset_id
           in: path
           schema:
             type: string
           required: true
-        - name: SNAPSHOT_ID
+        - name: snapshot_id
           in: path
           schema:
             type: string
@@ -344,13 +368,13 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/nodes/{NODE_ID}:
+  /api/v1/nodes/{node_id}:
     get:
       tags:
         - Nodes
       summary: Get a specific node
       parameters:
-        - name: NODE_ID
+        - name: node_id
           in: path
           schema:
             type: string
@@ -376,13 +400,13 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/nodes/{NODE_ID}/configs:
+  /api/v1/nodes/{node_id}/configs:
     get:
       tags:
         - Nodes
       summary: Get all configs for a node
       parameters:
-        - name: NODE_ID
+        - name: node_id
           in: path
           schema:
             type: string
@@ -392,13 +416,18 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/nodes/{NODE_ID}/configs/1:
+  /api/v1/nodes/{node_id}/configs/{config_key}:
     get:
       tags:
         - Nodes
       summary: Get a specific config for a node
       parameters:
-        - name: NODE_ID
+        - name: node_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: config_key
           in: path
           schema:
             type: string
@@ -408,7 +437,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /api/v1/nodes/{NODE_ID}/configs/:
+  /api/v1/nodes/{node_id}/configs/:
     post:
       tags:
         - Nodes
@@ -420,7 +449,7 @@ paths:
               type: object
               example: {}
       parameters:
-        - name: NODE_ID
+        - name: node_id
           in: path
           schema:
             type: string
@@ -440,7 +469,7 @@ paths:
           in: query
           schema:
             type: string
-          example: zh-hans
+          example: en
         - name: db
           in: query
           schema:
