@@ -10,7 +10,8 @@ info:
     name: GNU General Public License v3.0
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
   contact:
-    email: balchivist@jorked.com
+    name: Contact the developer
+    url: https://meta.wikimedia.org/wiki/User_talk:Hydriz
 servers:
   - url: https://dumps.wmcloud.org
 components:
